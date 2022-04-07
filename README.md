@@ -1,71 +1,7 @@
-# Arduino Core for mbed enabled devices
+# Custom ArduinoCore-mbed
 
-The repository contains the Arduino APIs and IDE integration files targeting a generic mbed-enabled board
+This is a custom version of [ArduinoCore-mbed](https://github.com/arduino/ArduinoCore-mbed) which modifies some hardcoded values in `variants/RASPBERRY_PI_PICO` so that it works with my PCB business card project. It's unfortunate that I need to do this, and that you can't make your own variants without forking the entire thing.
 
-## Installation
+Anyway, I just changed the `PIN_LED` to `31` since the v3 of the business card does not have a built-in LED, and the pin that it was set to before was `25`, which I am using for the Neopixels. This would potentially cause issues because it uses this for USB status indication (which I also disabled).
 
-### Clone the repository in `$sketchbook/hardware/arduino-git`
-
-```bash
-mkdir -p $sketchbook/hardware/arduino-git
-cd $sketchbook/hardware/arduino-git
-git clone git@github.com:arduino/ArduinoCore-mbed mbed
-```
-
-### Clone https://github.com/arduino/ArduinoCore-API into a directory of your choice.
-
-```bash
-git clone git@github.com:arduino/ArduinoCore-API
-```
-
-### Update the `api` symlink
-
-Create a symlink to `ArduinoCore-API/api` in `$sketchbook/hardware/arduino/mbed/cores/arduino`.
-
-### Test things out
-
-Open the Arduino IDE.
-
-You should now see three new targets under the `MBED boards` label.
-
-*This procedure does not automatically install the required ARM compiler toolchain.*
-
-If the toolchain is missing, you'll see errors like this when you try to build for an mbed-os enabled board.:
-
-```
-fork/exec /bin/arm-none-eabi-g++: no such file or directory
-```
-To install ARM build tools, use the `Boards Manager` option in the Arduino IDE to add the `Arduino mbed-enabled Boards` package.
-
-
-## Adding an mbed target
-
-Adding a target is a mostly automatic procedure that involves running https://github.com/arduino/ArduinoCore-mbed/blob/master/mbed-os-to-arduino after setting the `BOARDNAME` and `ARDUINOCORE` env variables.
-Actions marked as TODO must be executed manually.
-
-**Minimum Example**:
-```
-cd $sketchbook/hardware/arduino-git/mbed
-./mbed-os-to-arduino -r /home/alex/projects/arduino/cores/mbed-os-h747 PORTENTA_H7_M7:PORTENTA_H7_M7
-```
-
-### How to build a debug version of the Arduino mbed libraries
-* Modify `mbed-os-to-arduino `
-```diff
-mbed_compile () {
--       PROFILE_FLAG=""
-        if [ x"$PROFILE" != x ]; then
-                PROFILE_FLAG=--profile="$ARDUINOVARIANT"/conf/profile/$PROFILE.json
-                export PROFILE=-${PROFILE^^}
-+       else
-+               export PROFILE="-DEBUG"
-+               PROFILE_FLAG="--profile=debug"
-        fi
-```
-
-## Using this core as an mbed library
-
-You can use this core as a standard mbed library; all APIs are under `arduino` namespace (so they must be called like `arduino::digitalWrite()` )
-
-The opposite is working as well; from any sketch you can call mbed APIs by prepending `mbed::` namespace.
-
+Once I finish v4, this should no longer be needed, since there will actually be a status LED on pin 25 (the Neopixels were moved to 24).
