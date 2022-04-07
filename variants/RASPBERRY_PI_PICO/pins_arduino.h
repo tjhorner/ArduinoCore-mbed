@@ -64,7 +64,7 @@ static const uint8_t SCK  = PIN_SPI_SCK;
 #define HAS_UNIQUE_ISERIAL_DESCRIPTOR
 #define BOARD_VENDORID		0x2e8a
 #define BOARD_PRODUCTID		0x00c0
-#define BOARD_NAME			"RaspberryPi Pico"
+#define BOARD_NAME			"PCBusiness Card"
 
 uint8_t getUniqueSerialNumber(uint8_t* name);
 void _ontouch1200bps_();
